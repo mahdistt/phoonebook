@@ -1,0 +1,38 @@
+{% load static %}
+<html>
+<head>
+    <title>دفترچه تلفن</title>
+    <script src="{% static 'js/jquery-3.6.0.min.js' %}"></script>
+</head>
+<body>
+<h1>ثبت مدخل جدید</h1>
+<form>
+    {{ form.as_ul }}
+</form>
+<button id="send-form">ارسال فرم با تکنولوژی اجکس</button>
+</body>
+<script>
+    $(document).ready(function () {
+        $('#send-form').on('click', function (event) {
+            var first_name = $('#id_name').val();
+            var last_name = $('#id_last_name').val();
+            var phone_number = $('#id_phone_number').val();
+            $.ajax({
+                url: '{% url "phones:create" %}',
+                method: 'post',
+                data: {
+                    name: first_name,
+                    last_name: last_name,
+                    phone_number: phone_number
+                },
+                success: function (response) {
+                    alert('با موفقیت ذخیره شد.');
+                },
+                error: function (response){
+                    alert('اطلاعات وارد شده صحیح نیست.');
+                }
+            });
+        });
+    });
+</script>
+</html>

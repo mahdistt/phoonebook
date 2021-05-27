@@ -1,0 +1,49 @@
+{% load static %}
+<html>
+<head>
+    <title>سرچ در دفترچه</title>
+    <script src="{% static 'js/jquery-3.6.0.min.js' %}"></script>
+</head>
+<body>
+<h1>Search in Phonebook</h1>
+
+<form name="" method="get">
+    <input type="text" required id="searchh">
+</form>
+<select id="selectt">
+    <option value="1">exact</option>
+    <option value="2">start</option>
+    <option value="3">end</option>
+    <option value="4">exist</option>
+</select>
+<button id="search-btn">search</button>
+<div id="output-div"></div>
+
+
+<script>
+    $(document).ready(function () {
+        $('#search-btn').click(function () {
+            var query_text = $('#searchh').val();
+            var select = $('#selectt').val();
+            var ajax_config = {
+                url: '/phones/find/',
+                data: {
+                    phonenum: query_text,
+                    selecttt: select
+                },
+                method: 'get',
+                success: function (response) {
+                    var my_output_div = $('#output-div');
+                    $(response.results).each(function (index, obj) {
+                        var my_table = '<tr><td>' + obj.name + '</td></tr>';
+                        my_output_div.append(my_table);
+                    });
+                }
+            };
+            $.ajax(ajax_config);
+
+        });
+    });</script>
+
+</body>
+</html>
