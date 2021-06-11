@@ -7,43 +7,49 @@
 <body>
 <h1>Search in Phonebook</h1>
 
-<form name="" method="get">
-    <input type="text" required id="searchh">
+<form>
+    <label for="query">Enter phone number:</label>
+    <input type="text" id="query">
 </form>
-<select id="selectt">
-    <option value="1">exact</option>
-    <option value="2">start</option>
-    <option value="3">end</option>
-    <option value="4">exist</option>
+<select id="search-mode">
+    <option value="contain">contain number</option>
+    <option value="exactly">exactly number</option>
+    <option value="start-with">start number</option>
+    <option value="end-with">end number</option>
 </select>
-<button id="search-btn">search</button>
+<button id="search-btn">🔎</button>
 <div id="output-div"></div>
-
 
 <script>
     $(document).ready(function () {
         $('#search-btn').click(function () {
-            var query_text = $('#searchh').val();
-            var select = $('#selectt').val();
+            var query_text = $('#query').val();
+            var mode_search = $('#search-mode').val();
             var ajax_config = {
                 url: '/phones/find/',
                 data: {
                     phonenum: query_text,
-                    selecttt: select
+                    mode_search: mode_search
                 },
                 method: 'get',
                 success: function (response) {
                     var my_output_div = $('#output-div');
+                    my_output_div.empty();
+                    $(response.results).each(function (index, obj) {
+                        messsge='sdwqdqdwq'
+
+                    });
+
+
                     $(response.results).each(function (index, obj) {
                         var my_table = '<tr><td>' + obj.name + '</td></tr>';
                         my_output_div.append(my_table);
                     });
-                }
+                },
             };
             $.ajax(ajax_config);
-
         });
-    });</script>
-
+    });
+</script>
 </body>
 </html>

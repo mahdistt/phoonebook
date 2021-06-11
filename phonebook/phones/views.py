@@ -1,9 +1,10 @@
+from django.contrib.auth.views import LoginView
 from django.http import JsonResponse
 from django.shortcuts import render
 from django.views.decorators.csrf import csrf_exempt
 from django.views.decorators.http import require_POST, require_GET
 
-from . import forms
+from . import forms, models
 from .models import Entry
 
 
@@ -40,6 +41,19 @@ def show_add_entry_form(request):
     })
 
 
+def show_all_number(request):
+    if request.user.is_authenticated:
+        my_number = models.Entry.objects.filter(name=request.user)
+
+    return render(request=request,
+                  context={
+                      'object_list': my_number,
+                      'page_title': 'show phone book',
+                  },
+                  template_name='phones/show_all.html'
+                  )
+
+
 @require_GET
 def show_search_form(request):
     """
@@ -50,32 +64,32 @@ def show_search_form(request):
 
 def find_entry(request):
     """
-     Finds a phonebook entry
-     """
+    Finds a phonebook entry
+    """
     phone_number = request.GET.get('phonenum', None)
-    select = request.GET.get('selecttt', None)
-    # if not phone_number:
-    #     return JsonResponse({'success': False, 'error': 'No number specified.'}, status=400)
-    if select == 1:
-        qs = Entry.objects.filter(phone_number=phone_number)
-    elif select == 2:
-        qs = Entry.objects.filter(phone_number__startswith=phone_number)
-    elif select == 3:
-        qs = Entry.objects.filter(phone_number__endswith=phone_number)
-    else:
-        qs = Entry.objects.filter(phone_number__contains=phone_number)
-    if qs:
-        return JsonResponse(
-            {
-                'results': list(
-                    qs.values()
-                ),
-                'count': qs.count()
-            }
-        )
-    else:
-        return JsonResponse(
-            {
-                'result': 'error'
-            }
-        )
+    mode_search = request.GET.get('mode_search', None)
+    if not phone_number:
+        return JsonResponse({'success': False, 'error': 'No number specified.'}, status=200)
+    if phone_number:
+        if mode_search == 'contain':
+            qs = Entry.objects.filter(phone_number__contains=phone_number)
+        elif mode_search == 'end-with':
+            qs = Entry.objects.filter(phone_number__endswith=phone_number)
+        elif mode_search == 'start-with':
+            qs = Entry.objects.filter(phone_number__startswith=phone_number)
+        else:
+            qs = Entry.objects.filter(phone_number=phone_number)
+
+    return JsonResponse(
+        {
+            'results': list(
+                qs.values()
+            ),
+            'count': qs.count()
+        },
+
+    )
+
+
+class AdminLogin(LoginView):
+    template_name = 'LoginView_form.html'

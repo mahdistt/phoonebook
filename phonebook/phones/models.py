@@ -1,7 +1,7 @@
 from django.core.validators import RegexValidator
 from django.db import models
 
-phone_regex = RegexValidator(regex='09(0[1-2]|1[0-9]|3[0-9]|2[0-1])-?[0-9]{3}-?[0-9]{4}', message='phone number invalid')
+phone_regex = RegexValidator(regex='^0[0-9]{2,}[0-9]{7,}$', message='phone number invalid')
 
 
 class Entry(models.Model):
@@ -12,3 +12,11 @@ class Entry(models.Model):
     name = models.CharField(max_length=100)
     last_name = models.CharField(max_length=100)
     phone_number = models.CharField(validators=[phone_regex], max_length=11, unique=True)
+
+
+class User(models.Model):
+    """
+    users info
+    """
+    name = models.CharField(max_length=100)
+    last_name = models.CharField(max_length=100)
