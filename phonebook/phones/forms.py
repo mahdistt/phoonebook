@@ -9,4 +9,5 @@ class EntryForm(forms.ModelForm):
             'name',
             'last_name',
             'phone_number',
+
         )

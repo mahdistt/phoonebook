@@ -1,50 +1,61 @@
+from django.contrib.auth import logout
+from django.contrib.auth.decorators import login_required
+from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.auth.views import LoginView
 from django.http import JsonResponse
 from django.shortcuts import render
+from django.urls import reverse_lazy
 from django.views.decorators.csrf import csrf_exempt
-from django.views.decorators.http import require_POST, require_GET
+from django.views.decorators.http import require_GET
+from django.views.generic import UpdateView
+from rest_framework import generics
 
 from . import forms, models
+from . import serializers
 from .models import Entry
 
 
 @csrf_exempt
-@require_POST
+@login_required
 def create_entry(request):
     """
     Creates an entry via AJAX
     """
     form_instance = forms.EntryForm(data=request.POST)
     if form_instance.is_valid():
-        entry_object = form_instance.save()
-        return JsonResponse(data={
-            'success': True,
-            'pk': entry_object.pk,
-            'name': entry_object.name,
-            'last_name': entry_object.last_name,
-            'phone_number': entry_object.phone_number
-        }, status=201)
-    else:
-        return JsonResponse(data={
-            'success': False,
-        }, status=400)
+        form_instance.instance.creator = request.user
+        form_instance.save()
+        return render(request, 'phones/show_all.html')
+    #     return JsonResponse(data={
+    #         'success': True,
+    #         'pk': entry_object.pk,
+    #         'name': entry_object.name,
+    #         'last_name': entry_object.last_name,
+    #         'phone_number': entry_object.phone_number,
+    #     }, status=201)
+    # else:
+    #     return JsonResponse(data={
+    #         'success': False,
+    #     }, status=400)
 
 
 @csrf_exempt
 @require_GET
+@login_required
 def show_add_entry_form(request):
     """
     Show the add entry form page
     """
     return render(request, 'phones/add_entry.html', {
-        'form': forms.EntryForm()
+        'form': forms.EntryForm(),
     })
 
 
+@login_required
 def show_all_number(request):
     if request.user.is_authenticated:
-        my_number = models.Entry.objects.filter(name=request.user)
-
+        my_number = models.Entry.objects.filter(creator=request.user)
+    # my_number = models.Entry.objects.all()
     return render(request=request,
                   context={
                       'object_list': my_number,
@@ -62,6 +73,7 @@ def show_search_form(request):
     return render(request, 'phones/search.html')
 
 
+@login_required
 def find_entry(request):
     """
     Finds a phonebook entry
@@ -93,3 +105,39 @@ def find_entry(request):
 
 class AdminLogin(LoginView):
     template_name = 'LoginView_form.html'
+
+
+class EditPhone(UpdateView, LoginRequiredMixin):
+    model = Entry
+    fields = (
+        'name',
+        'last_name',
+        'phone_number',
+    )
+    template_name = 'phones/entry_form.html'
+    success_url = reverse_lazy('phones:show_all_number')
+
+
+"""
+Rest 
+"""
+
+
+class ListPhonebook(generics.ListAPIView):
+    """
+    rest view for phonebook
+    """
+    queryset = models.Entry.objects.all()
+    serializer_class = serializers.ProductSerializer
+
+
+def show_home_page(request):
+    """
+    Show the search form page
+    """
+    return render(request, 'phones/homepage.html')
+
+
+def logout_view(request):
+    logout(request)
+    return render(request, 'phones/homepage.html')

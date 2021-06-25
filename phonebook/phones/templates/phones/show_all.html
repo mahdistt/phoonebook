@@ -1,18 +1,52 @@
+{% extends 'phones/homepage.html' %}
 {% load static %}
 <html lang="en">
 <head>
+
     <meta charset="UTF-8">
     <title>Title</title>
 </head>
 <body>
-{% for number in object_list  %}
-        <h1> numbers</h1>
-{{ number.name }}
-{{ number.last_name }}
-{{ number.created_at }}
-{{ number.phone_number }}
+{% csrf_token %}
+{% block content %}
+    <div class="col p-4">
 
-{% endfor %}
+        <div class="card">
+            <h5 class="card-header font-weight-light">all numbers</h5>
+            <table class="table table-striped">
+                <thead>
+                <tr>
+                    <th scope="col">number</th>
+                    <th scope="col">First</th>
+                    <th scope="col">Last</th>
+                    <th scope="col">Phone Number</th>
+                    <th scope="col">Creator</th>
+                    <th scope="col">Create Time</th>
+                    <th scope="col">Edit Contact</th>
+                </tr>
+                </thead>
+                {% for number in object_list %}
+                    <tbody>
+                    <tr>
+                        <th scope="row">{{ forloop.counter }}</th>
+                        <td>{{ number.name }}</td>
+                        <td>{{ number.last_name }}</td>
+                        <td>{{ number.phone_number }}</td>
+                        <td>{{ number.creator }}</td>
+                        <td>{{ number.created_at }}</td>
+                        <td><a href="{% url 'phones:edit-phone' number.pk %}">edit</a></td>
+                    </tr>
+                    </tbody>
+                {% endfor %}
+            </table>
 
+        </div>
+    </div>
+{% endblock %}
 </body>
 </html>
+
+{% load static %}
+
+<!DOCTYPE html>
+

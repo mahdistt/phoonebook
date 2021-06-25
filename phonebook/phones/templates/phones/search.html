@@ -1,55 +1,73 @@
+{% extends 'phones/homepage.html' %}
 {% load static %}
 <html>
 <head>
-    <title>سرچ در دفترچه</title>
     <script src="{% static 'js/jquery-3.6.0.min.js' %}"></script>
 </head>
 <body>
-<h1>Search in Phonebook</h1>
+{% block content %}
+    <!-- MAIN -->
+    <div class="col p-4">
 
-<form>
-    <label for="query">Enter phone number:</label>
-    <input type="text" id="query">
-</form>
-<select id="search-mode">
-    <option value="contain">contain number</option>
-    <option value="exactly">exactly number</option>
-    <option value="start-with">start number</option>
-    <option value="end-with">end number</option>
-</select>
-<button id="search-btn">🔎</button>
-<div id="output-div"></div>
+        <div class="card">
+            <h5 class="card-header font-weight-light">Search number</h5>
+            <div class="card-body">
+                <form>
+                    <label for="query">Enter phone number:</label>
+                    <input type="text" id="query">
+                </form>
+                <select id="search-mode">
+                    <option value="contain">contain number</option>
+                    <option value="exactly">exactly number</option>
+                    <option value="start-with">start number</option>
+                    <option value="end-with">end number</option>
+                </select>
+                <button id="search-btn">🔎</button>
+                <div id="output-div" class="table table-striped"></div>
 
-<script>
-    $(document).ready(function () {
-        $('#search-btn').click(function () {
-            var query_text = $('#query').val();
-            var mode_search = $('#search-mode').val();
-            var ajax_config = {
-                url: '/phones/find/',
-                data: {
-                    phonenum: query_text,
-                    mode_search: mode_search
-                },
-                method: 'get',
-                success: function (response) {
-                    var my_output_div = $('#output-div');
-                    my_output_div.empty();
-                    $(response.results).each(function (index, obj) {
-                        messsge='sdwqdqdwq'
+            </div>
+        </div>
+    </div><!-- Main Col END -->
 
-                    });
-
-
-                    $(response.results).each(function (index, obj) {
-                        var my_table = '<tr><td>' + obj.name + '</td></tr>';
-                        my_output_div.append(my_table);
-                    });
-                },
-            };
-            $.ajax(ajax_config);
+{% endblock %}
+{% block page_scripts %}
+    <script>
+        $(document).ready(function () {
+            $('#search-btn').click(function () {
+                var query_text = $('#query').val();
+                var mode_search = $('#search-mode').val();
+                var ajax_config = {
+                    url: '/phones/find/',
+                    data: {
+                        phonenum: query_text,
+                        mode_search: mode_search
+                    },
+                    method: 'get',
+                    success: function (response) {
+                        alert('یافت شد');
+                        var my_output_div = $('#output-div');
+                        my_output_div.empty();
+                        $(response.results).each(function (index, obj) {
+                            var my_table = '<tr>' +
+                                '<td>' + obj.name + '</td>' +
+                                '<td>' + obj.last_name + '</td>' +
+                                '<td>' + obj.phone_number + '</td>' +
+                                '<td>' + obj.creator + '</td>' +
+                                '</tr>';
+                            my_output_div.append(my_table);
+                        });
+                    },
+                    error: function (response){
+                        alert('شماره یافت نشد');
+                    }
+                };
+                $.ajax(ajax_config);
+            });
         });
-    });
-</script>
+    </script>
+{% endblock %}
 </body>
 </html>
+
+
+
