@@ -2,13 +2,15 @@ from django.contrib.auth import logout
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.auth.views import LoginView
-from django.http import JsonResponse
+from django.http import JsonResponse, HttpResponseRedirect
 from django.shortcuts import render
 from django.urls import reverse_lazy
 from django.views.decorators.csrf import csrf_exempt
 from django.views.decorators.http import require_GET
 from django.views.generic import UpdateView
 from rest_framework import generics
+import itertools
+from django.core.paginator import Paginator
 
 from . import forms, models
 from . import serializers
@@ -55,11 +57,21 @@ def show_add_entry_form(request):
 def show_all_number(request):
     if request.user.is_authenticated:
         my_number = models.Entry.objects.filter(creator=request.user)
+        other_number=[]
     # my_number = models.Entry.objects.all()
+    # Combine two querysets into one list
+    qs = list(itertools.chain(my_number, other_number))
+
+    # Paginate by using pagination class
+    paginated = Paginator(qs, 4)
+
+    # Now which page are you looking for?
+    paginated_page = paginated.get_page(request.GET.get('page', 1))
     return render(request=request,
                   context={
-                      'object_list': my_number,
-                      'page_title': 'show phone book',
+                      'object_list': paginated_page,
+                      'page_obj': 'paginated',
+                      'page_title': 'Show all posts'
                   },
                   template_name='phones/show_all.html'
                   )
@@ -73,7 +85,7 @@ def show_search_form(request):
     return render(request, 'phones/search.html')
 
 
-@login_required
+@login_required(login_url='/accounts/login/')
 def find_entry(request):
     """
     Finds a phonebook entry
@@ -105,6 +117,7 @@ def find_entry(request):
 
 class AdminLogin(LoginView):
     template_name = 'LoginView_form.html'
+
 
 
 class EditPhone(UpdateView, LoginRequiredMixin):

@@ -12,21 +12,21 @@
         <span class="navbar-toggler-icon"></span>
     </button>
     <a class="navbar-brand" href="#">
-        <img src="https://v4-alpha.getbootstrap.com/assets/brand/bootstrap-solid.svg" width="30" height="30"
-             class="d-inline-block align-top" alt="">
+        <img src="https://media-exp1.licdn.com/dms/image/C4D03AQG8M7iJeCITgw/profile-displayphoto-shrink_200_200/0/1614260643050?e=1628726400&v=beta&t=GphmyJJNYwbiQ17z4vyRGQj-dwqRljAoD5JrqWSVK8g" width="30" height="30"
+             class="d-inline-block align-top" alt="user_profile_image_personal">
         <span class="menu-collapsed">Phonebook</span>
     </a>
     <div class="collapse navbar-collapse" id="navbarNavDropdown">
         <ul class="navbar-nav ml-auto">
             <li class="nav-item active">
-                <a class="nav-link" href="#top">Home <span class="sr-only">(current)</span></a>
+                <a class="nav-link" href="{%url 'phones:login' %}">Login <span class="sr-only">(current)</span></a>
             </li>
-            <li class="nav-item">
-                <a class="nav-link" href="#top">Features</a>
-            </li>
-            <li class="nav-item">
-                <a class="nav-link" href="#top">Pricing</a>
-            </li>
+{#            <li class="nav-item">#}
+{#                <a class="nav-link" href="#top">Features</a>#}
+{#            </li>#}
+{#            <li class="nav-item">#}
+{#                <a class="nav-link" href="#top">Pricing</a>#}
+{#            </li>#}
             <!-- This menu is hidden in bigger devices with d-sm-none.
            The sidebar isn't proper for smaller screens imo, so this dropdown menu can keep all the useful sidebar itens exclusively for smaller screens  -->
             <li class="nav-item dropdown d-sm-block d-md-none">
