@@ -1,7 +1,7 @@
 from django.urls import path
 
 from . import views
-from .views import AdminLogin,logout_view
+from .views import AdminLogin, logout_view
 
 app_name = 'phones'
 urlpatterns = [
@@ -15,4 +15,6 @@ urlpatterns = [
     path('show/', views.show_all_number, name="show_all_number"),
     path('edit/<int:pk>', views.EditPhone.as_view(), name="edit-phone"),
     path('api/v1/', views.ListPhonebook.as_view()),
+    path('profile/edit/', views.EditProfile.as_view(), name='edit-profile'),
+
 ]

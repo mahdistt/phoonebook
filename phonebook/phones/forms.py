@@ -1,4 +1,5 @@
 from django import forms
+
 from . import models
 
 
@@ -10,4 +11,12 @@ class EntryForm(forms.ModelForm):
             'last_name',
             'phone_number',
 
+        )
+
+
+class ProfileFrom(forms.ModelForm):
+    class Meta:
+        model = models.Entry
+        fields = (
+            'creator',
         )

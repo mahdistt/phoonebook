@@ -12,15 +12,22 @@
         <span class="navbar-toggler-icon"></span>
     </button>
     <a class="navbar-brand" href="#">
+     {% if  user.is_authenticated %}
         <img src="https://media-exp1.licdn.com/dms/image/C4D03AQG8M7iJeCITgw/profile-displayphoto-shrink_200_200/0/1614260643050?e=1628726400&v=beta&t=GphmyJJNYwbiQ17z4vyRGQj-dwqRljAoD5JrqWSVK8g" width="30" height="30"
              class="d-inline-block align-top" alt="user_profile_image_personal">
-        <span class="menu-collapsed">Phonebook</span>
+     {% endif %}
+        {% if user.is_authenticated %}
+        <span class="menu-collapsed"> {{ request.user.get_full_name }}</span>
+        {% endif %}
     </a>
     <div class="collapse navbar-collapse" id="navbarNavDropdown">
         <ul class="navbar-nav ml-auto">
+            {% if not user.is_authenticated %}
             <li class="nav-item active">
                 <a class="nav-link" href="{%url 'phones:login' %}">Login <span class="sr-only">(current)</span></a>
+
             </li>
+            {% endif %}
 {#            <li class="nav-item">#}
 {#                <a class="nav-link" href="#top">Features</a>#}
 {#            </li>#}
@@ -87,7 +94,7 @@
             </a>
             <!-- Submenu content -->
             <div id='submenu2' class="collapse sidebar-submenu">
-                <a href="#" class="list-group-item list-group-item-action bg-dark text-white">
+                <a href="{% url 'phones:edit-profile' %}" class="list-group-item list-group-item-action bg-dark text-white">
                     <span class="menu-collapsed">bio</span>
                 </a>
                 <a href="#" class="list-group-item list-group-item-action bg-dark text-white">
@@ -97,7 +104,11 @@
             <a href="{% url 'phones:logout_view' %}" class="bg-dark list-group-item list-group-item-action">
                 <div class="d-flex w-100 justify-content-start align-items-center">
                     <span class="fa fa-tasks fa-fw mr-3"></span>
+                   {% if  user.is_authenticated %}
+
+
                     <span class="menu-collapsed">Log out</span>
+                     {% endif %}
                 </div>
             </a>
 

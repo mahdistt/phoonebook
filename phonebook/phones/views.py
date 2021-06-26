@@ -1,16 +1,18 @@
-from django.contrib.auth import logout
+import itertools
+
+from django.contrib.auth import logout, get_user_model
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.auth.views import LoginView
-from django.http import JsonResponse, HttpResponseRedirect
+from django.core.paginator import Paginator
+from django.http import JsonResponse
 from django.shortcuts import render
 from django.urls import reverse_lazy
+from django.views import generic
 from django.views.decorators.csrf import csrf_exempt
 from django.views.decorators.http import require_GET
 from django.views.generic import UpdateView
 from rest_framework import generics
-import itertools
-from django.core.paginator import Paginator
 
 from . import forms, models
 from . import serializers
@@ -28,17 +30,6 @@ def create_entry(request):
         form_instance.instance.creator = request.user
         form_instance.save()
         return render(request, 'phones/show_all.html')
-    #     return JsonResponse(data={
-    #         'success': True,
-    #         'pk': entry_object.pk,
-    #         'name': entry_object.name,
-    #         'last_name': entry_object.last_name,
-    #         'phone_number': entry_object.phone_number,
-    #     }, status=201)
-    # else:
-    #     return JsonResponse(data={
-    #         'success': False,
-    #     }, status=400)
 
 
 @csrf_exempt
@@ -57,7 +48,7 @@ def show_add_entry_form(request):
 def show_all_number(request):
     if request.user.is_authenticated:
         my_number = models.Entry.objects.filter(creator=request.user)
-        other_number=[]
+        other_number = []
     # my_number = models.Entry.objects.all()
     # Combine two querysets into one list
     qs = list(itertools.chain(my_number, other_number))
@@ -84,6 +75,12 @@ def show_search_form(request):
     """
     return render(request, 'phones/search.html')
 
+
+# class find (generic.view):
+#     @method_decorator(login_required)
+#     def get(self,*args,**kwargs):
+#         pass
+#     based view for find_entry
 
 @login_required(login_url='/accounts/login/')
 def find_entry(request):
@@ -117,7 +114,7 @@ def find_entry(request):
 
 class AdminLogin(LoginView):
     template_name = 'LoginView_form.html'
-
+    success_url = reverse_lazy('phones:home')
 
 
 class EditPhone(UpdateView, LoginRequiredMixin):
@@ -154,3 +151,27 @@ def show_home_page(request):
 def logout_view(request):
     logout(request)
     return render(request, 'phones/homepage.html')
+
+
+# class EditProfile(LoginRequiredMixin, generic.UpdateView):
+#     model = Entry
+#     form_class = forms.ProfileFrom
+#     template_name = 'phones/edit_profile.html'
+#     success_url = reverse_lazy('phones:home')
+
+
+class EditProfile(LoginRequiredMixin, UpdateView):
+    """
+    Updates a user profile
+    """
+    model = get_user_model()
+    fields = (
+        'first_name',
+        'last_name',
+        'email'
+    )
+    template_name = 'phones/edit_profile.html'
+    success_url = reverse_lazy('phones:home')
+
+    def get_object(self, queryset=None):
+        return self.request.user
