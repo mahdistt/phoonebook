@@ -1,4 +1,5 @@
 {% extends 'phones/homepage.html' %}
+
 {% load static %}
 <html lang="en">
 <head>
@@ -9,41 +10,45 @@
 <body>
 {% csrf_token %}
 {% block content %}
-    <div class="col p-4">
+{#    {% load cache %}#}
+{#    {% cache %}#}
 
-        <div class="card">
-            <h5 class="card-header font-weight-light">all numbers</h5>
-            <table class="table table-striped">
-                <thead>
-                <tr>
-                    <th scope="col">number</th>
-                    <th scope="col">First</th>
-                    <th scope="col">Last</th>
-                    <th scope="col">Phone Number</th>
-                    <th scope="col">Creator</th>
-                    <th scope="col">Create Time</th>
-                    <th scope="col">Edit Contact</th>
-                </tr>
-                </thead>
+        <div class="col p-4">
 
-                {% for number in object_list %}
-
-                    <tbody>
+            <div class="card">
+                <h5 class="card-header font-weight-light">all numbers</h5>
+                <table class="table table-striped">
+                    <thead>
                     <tr>
-                        <th scope="row">{{ forloop.counter }}</th>
-                        <td>{{ number.name }}</td>
-                        <td>{{ number.last_name }}</td>
-                        <td>{{ number.phone_number }}</td>
-                        <td>{{ number.creator }}</td>
-                        <td>{{ number.created_at }}</td>
-                        <td><a href="{% url 'phones:edit-phone' number.pk %}">edit</a></td>
+                        <th scope="col">number</th>
+                        <th scope="col">First</th>
+                        <th scope="col">Last</th>
+                        <th scope="col">Phone Number</th>
+                        <th scope="col">Creator</th>
+                        <th scope="col">Create Time</th>
+                        <th scope="col">Edit Contact</th>
                     </tr>
-                    </tbody>
-                {% endfor %}
-            </table>
+                    </thead>
+
+                    {% for number in object_list %}
+
+                        <tbody>
+                        <tr>
+                            <th scope="row">{{ forloop.counter }}</th>
+                            <td>{{ number.name }}</td>
+                            <td>{{ number.last_name }}</td>
+                            <td>{{ number.phone_number }}</td>
+                            <td>{{ number.creator }}</td>
+                            <td>{{ number.created_at }}</td>
+                            <td><a href="{% url 'phones:edit-phone' number.pk %}">edit</a></td>
+                        </tr>
+                        </tbody>
+                    {% endfor %}
+                </table>
+            </div>
+            {% include 'phones/pagination.html' %}
         </div>
-        {% include 'phones/pagination.html' %}
-    </div>
+{#    {% endcache %}#}
 {% endblock %}
 </body>
 </html>

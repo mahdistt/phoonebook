@@ -14,3 +14,7 @@ services:
       PGDATA: /db_data
     volumes:
       - BlogDbData2:/db_data
+#    cache:
+#      - image: "rbtmq"
+#          ports:
+#            - 1122:1122
