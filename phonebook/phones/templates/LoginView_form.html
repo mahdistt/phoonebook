@@ -9,7 +9,7 @@
 {% block content %}
     <form method="POST">
         {% csrf_token %}
-        {{ form.as_p }}
+        {{ form.as_p  }}
         <input type="submit" name="sumbit">
     </form>
     </body>

@@ -7,16 +7,17 @@ from django.contrib.auth.views import LoginView
 from django.core.management import BaseCommand
 from django.core.paginator import Paginator
 from django.http import JsonResponse
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 from django.urls import reverse_lazy
 from django.views.decorators.csrf import csrf_exempt
 from django.views.decorators.http import require_GET
-from django.views.generic import UpdateView
+from django.views.generic import UpdateView, ListView
 from rest_framework import generics
 
 from . import forms, models
 from . import serializers
 from .models import Entry
+from .serializers import LoginSerializer
 
 
 @csrf_exempt
@@ -192,3 +193,47 @@ class Command(BaseCommand):
     #                           self.items,
     #
     #                        )
+
+
+class PrintPhonebook(LoginRequiredMixin, ListView):
+    model = models.Entry
+    template_name = 'phones/entry_detail.html'
+
+
+from rest_framework.renderers import TemplateHTMLRenderer
+from rest_framework.response import Response
+from rest_framework.views import APIView
+
+
+# class ProfileList(APIView):
+#     renderer_classes = [TemplateHTMLRenderer]
+#     template_name = 'phones/show_all.html'
+#
+#     def get(self, request):
+#         if request.user.is_authenticated:
+#             queryset = Entry.objects.filter(creator=request.user)
+#             return Response({'profiles': queryset})
+
+
+from django.shortcuts import get_object_or_404
+
+from rest_framework.renderers import TemplateHTMLRenderer
+from rest_framework.views import APIView
+
+
+class ProfileDetail(APIView):
+    renderer_classes = [TemplateHTMLRenderer]
+    template_name = 'profile_detail.html'
+
+    def get(self, request, pk):
+        profile = get_object_or_404(Entry, pk=pk)
+        serializer = LoginSerializer(profile)
+        return Response({'serializer': serializer, 'profile': profile})
+
+    def post(self, request, pk):
+        profile = get_object_or_404(Entry, pk=pk)
+        serializer = LoginSerializer(profile, data=request.data)
+        if not serializer.is_valid():
+            return Response({'serializer': serializer, 'profile': profile})
+        serializer.save()
+        return redirect('profile-list')

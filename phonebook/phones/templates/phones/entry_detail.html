@@ -1,0 +1,29 @@
+<dl>
+    <dt>
+        دفترچه تلفن:
+    </dt>
+    <dd>{{ object.creator.get_full_name }}</dd>
+    <dd>{{ object.pk }}</dd>
+</dl>
+
+<table>
+    <thead>
+    <tr>
+        <th>ردیف</th>
+        <th>نام</th>
+        <th>نام خانوادگی</th>
+        <th>شماره</th>
+    </tr>
+    </thead>
+    <tbody>
+    {% for foo in object_list %}
+        <th>{{ forloop.counter }}</th>
+        <td>{{ foo.name }}</td>
+        <td>{{ foo.last_name }}</td>
+        <td>{{ foo.phone_number }}</td>
+        <td>{{ foo.creator }}</td>
+        <td>{{ foo.created_at }}</td>
+    {% endfor %}
+
+    </tbody>
+</table>

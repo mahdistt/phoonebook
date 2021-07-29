@@ -12,6 +12,9 @@ class EntryForm(forms.ModelForm):
             'phone_number',
 
         )
+        widgets = {
+            'phone_number': forms.NumberInput
+        }
 
 
 class ProfileFrom(forms.ModelForm):

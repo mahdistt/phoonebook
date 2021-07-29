@@ -16,5 +16,8 @@ urlpatterns = [
     path('edit/<int:pk>', views.EditPhone.as_view(), name="edit-phone"),
     path('api/v1/', views.ListPhonebook.as_view()),
     path('profile/edit/', views.EditProfile.as_view(), name='edit-profile'),
+    path('print/', views.PrintPhonebook.as_view(), name='print-number'),
+    # path('ProfileList/', views.ProfileList.as_view(), name='ProfileList'),
+    # path('ProfileDetail/<int:pk>', views.ProfileDetail.as_view(), name='ProfileDetail'),
 
 ]

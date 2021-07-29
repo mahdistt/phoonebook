@@ -1,7 +1,8 @@
 {% extends 'phones/homepage.html' %}
+{% load widget_tweaks %}
 <html>
 <head>
-    <title>EditeProfile</title>
+    <title>EditProfile</title>
 
 </head>
 
@@ -9,9 +10,12 @@
 {% block content %}
     <form method="POST">
         {% csrf_token %}
-
-        <!-- form variable -->
-        {{ form.as_p }}
+        <label for="title">نام:</label>
+        {{ form.first_name | add_class:'form-control' }}
+        <label for="title">نام خانوادگی: </label>
+        {{ form.last_name  | add_class:'form-control' }}
+        <label for="title">ایمیل:</label>
+        {{ form.email | add_class:'form-control' }}
 
         <input type="submit" name="sumbit">
     </form>
